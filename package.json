@@ -1,30 +1,29 @@
 {
-  "name": "react-simple-boilerplate",
+  "name": "chatty",
   "version": "1.0.0",
-  "description": "Simple and lightweight Boilerplate for ReactJS projects",
+  "description": "Simple and lightweight chat project",
   "scripts": {
     "lint": "eslint src",
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/noahlotzer/react-simple-boilerplate.git"
+    "url": "git+https://github.com/devin-web/chatty.git"
   },
   "keywords": [
     "react",
     "reactjs",
-    "boilerplate",
     "reload",
     "live",
     "edit",
     "webpack"
   ],
-  "author": "Noah-Jerome Lotzer <n.lotzer@neusta.de>",
+  "author": "Devin Murnane <devin.gir@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/noahlotzer/react-simple-boilerplate/issues"
+    "url": "https://github.com/devin-web/chatty/issues"
   },
-  "homepage": "https://github.com/noahlotzer/react-simple-boilerplate",
+  "homepage": "https://github.com/devin-web/chatty",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -47,5 +46,6 @@
   "dependencies": {
     "react": "15.2.1",
     "react-dom": "15.2.1"
-  }
+  },
+  "main": "server.js"
 }
