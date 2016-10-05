@@ -1,28 +1,37 @@
+//var WebSocketServer = require('websocket').server;
+//const  wss = require( 'ws' );
+
 import React, {Component} from 'react';
-import ChatBar from './ChatBar.jsx'
-import MessageList from './MessageList.jsx'
-import Message from './Message.jsx'
+import ChatBar from './ChatBar.jsx';
+import MessageList from './MessageList.jsx';
+import Message from './Message.jsx';
 
-var data = {
-  currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-  messages: [
-    {
-      id: 1,
-      username: "Bob",
-      content: "Has anyone seen my marbles?"
-    },
-    {
-      id: 2,
-      username: "Anonymous",
-      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-    }
-  ]
-};
+// wsServer = new WebSocketServer({
+//     httpServer: server
+// });
 
+// var data = {
+//   currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
+//   messages: [
+//     {
+//       id: 1,
+//       username: "Bob",
+//       content: "Has anyone seen my marbles?"
+//     },
+//     {
+//       id: 2,
+//       username: "Anonymous",
+//       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
+//     }
+//   ]
+// };
 const App = React.createClass({
-
   getInitialState: function() {
-    return { data };
+    var data = {
+      currentUser: {name: "Bob"},
+      messages: [] // messages coming from the server will be stored here as they arrive
+    };
+    return {data: data};
   },
 
   componentDidMount: function() {
@@ -34,16 +43,40 @@ const App = React.createClass({
       // Update the state of the app component. This will call render()
       this.setState({data: this.state.data})
     }, 3000);
+
+    console.log("Connecting to server");
+  //  var ws = new WebSocket( "wss://localhost:4000" );
+    this.state.socket = new WebSocket( "ws://localhost:4000/" );
+
+    // setTimeout(() => {
+    // this.state.socket.send( "Test" );
+    // }, 500 );
+
+    this.state.socket.onmessage = (event) => {
+      console.log(event);
+      var message = JSON.parse( event.data );
+      this.addMessage( message );
+    // code to handle incoming message
+    }
+
   },
 
-  addMessage: function ( username, content ) {
-    var id = this.state.data.messages.length + 1;
+  sendMessage: function( message ) {
+    this.state.socket.send( JSON.stringify({
+      username: message.username,
+      content: message.content })
+    );
+  },
+
+  addMessage: function ( message ) {
+    // var id = this.state.data.messages.length + 1;
 
     this.state.data.messages.push({
-      id: id,
-      username: username,
-      content: content
+      id: message.id,
+      username: message.username,
+      content: message.content
     });
+
 
     this.setState({data: this.state.data})
   },
@@ -57,7 +90,7 @@ const App = React.createClass({
         </nav>
         <MessageList messages={this.state.data.messages}/>
         <ChatBar  currentUser={this.state.data.currentUser}
-                  onKeyPressedEnter={this.addMessage}/>
+                  onKeyPressedEnter={this.sendMessage}/>
       </div>
     );
   }

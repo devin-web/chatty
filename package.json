@@ -44,9 +44,13 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
+    "fs": "0.0.1-security",
+    "options": "0.0.6",
     "react": "15.2.1",
     "react-dom": "15.2.1",
-    "ws": "1.1.1"
+    "tls": "0.0.1",
+    "websocket": "^1.0.23",
+    "ws": "^1.1.1"
   },
   "main": "server.js"
 }

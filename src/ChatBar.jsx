@@ -5,7 +5,7 @@ import Message from './Message.jsx';
 const ChatBar = React.createClass({
 
   getInitialState: function() {
-    return { value: "" }
+    return { value: "", username: "" }
   },
 
   componentWillUpdate: function() {
@@ -17,14 +17,27 @@ const ChatBar = React.createClass({
   },
 
   handleChange: function(event) {
-    this.setState( { value: event.target.value } );
-    console.log('Change', this.state.value);
+    //this.setState( { value: event.target.value } );
+    let newState = Object.assign({}, this.state, { value: event.target.value });
+    this.setState( newState );
+    console.log( "Change", this.state.value);
+  },
+
+  handleChangeName: function(event) {
+    let newState = Object.assign({}, this.state, { username: event.target.value });
+    this.setState( newState );
+    console.log( "ChangeName", this.state.username );
   },
 
   onKeyPress( event ){
     if( event.key === "Enter" ){
-      this.props.onKeyPressedEnter( this.props.currentUser.name, this.state.value )
-      this.setState( { value: "" } );
+      this.props.onKeyPressedEnter( {
+        //username: this.props.currentUser.name,
+        username: this.state.username,
+        content: this.state.value } );
+      let newState = Object.assign({}, this.state, { value: "" });
+      this.setState( newState );
+      //this.setState( { value: "" } );
     }
     console.log('Keypress', this.state.value);
   },
@@ -39,11 +52,13 @@ const ChatBar = React.createClass({
                 placeholder={
                   this.props.currentUser ? "" : "Enter a username (optional)"
                 }
-                defaultValue={ this.props.currentUser.name }   />
+                defaultValue={ this.props.currentUser.name }
+                onChange={ this.handleChangeName }
+        />
         <input  id="new-message" type="text" placeholder="Type a message and hit ENTER"
-                value={this.state.value}
-                onChange={this.handleChange}
-                onKeyPress={this.onKeyPress}
+                value={ this.state.value }
+                onChange={ this.handleChange }
+                onKeyPress={ this.onKeyPress }
         />
       </footer>
     );
