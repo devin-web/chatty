@@ -36,6 +36,18 @@ const App = React.createClass({
     }, 3000);
   },
 
+  addMessage: function ( username, content ) {
+    var id = this.state.data.messages.length + 1;
+
+    this.state.data.messages.push({
+      id: id,
+      username: username,
+      content: content
+    });
+
+    this.setState({data: this.state.data})
+  },
+
   render: function() {
     console.log("App");
     return (
@@ -44,7 +56,8 @@ const App = React.createClass({
           <h1>Chatty</h1>
         </nav>
         <MessageList messages={this.state.data.messages}/>
-        <ChatBar currentUser={this.state.data.currentUser}/>
+        <ChatBar  currentUser={this.state.data.currentUser}
+                  onKeyPressedEnter={this.addMessage}/>
       </div>
     );
   }
