@@ -13,7 +13,8 @@ const MessageList = React.createClass({
       (
         <Message  key={this.props.messages[i].id}
                   username={this.props.messages[i].username}
-                  content={this.props.messages[i].content}/> );
+                  content={this.props.messages[i].content}/>
+      );
     }
 
     return (

@@ -31,7 +31,7 @@ const App = React.createClass({
       currentUser: {name: "Bob"},
       messages: [] // messages coming from the server will be stored here as they arrive
     };
-    return {data: data};
+    return data;
   },
 
   componentDidMount: function() {
@@ -39,9 +39,9 @@ const App = React.createClass({
     setTimeout(() => {
       console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
-      this.state.data.messages.push({id: 3, username: "Michelle", content: "Hello there!"});
+      this.state.messages.push({id: 3, username: "Michelle", content: "Hello there!"});
       // Update the state of the app component. This will call render()
-      this.setState({data: this.state.data})
+      this.setState( this.state );
     }, 3000);
 
     console.log("Connecting to server");
@@ -55,14 +55,45 @@ const App = React.createClass({
     this.state.socket.onmessage = (event) => {
       console.log(event);
       var message = JSON.parse( event.data );
-      this.addMessage( message );
+      console.log( "message:", message );
+
+      switch( message.type ) {
+      case "incomingMessage":
+        this.addMessage( message );
+        break;
+      case "incomingNotification":
+        this.addSystemMessage( message );
+        break;
+      default:
+        console.log( "Error, unexpected packet received" );
+        break;
+      }
+
     // code to handle incoming message
     }
 
   },
 
+  updateCurrentUser: function( name ) {
+    let newState = Object.assign({}, this.state, { currentUser: name } );
+    this.setState( newState );
+  },
+
+  changeName: function( origName, newName ) {
+
+    let newState = Object.assign({}, this.state,  { currentUser: newName.name  } );
+
+    this.setState( newState );
+
+    this.state.socket.send( JSON.stringify({
+        type: "postNotification",
+        content: origName.name + " changed their name to " + newName.name }));
+
+  },
+
   sendMessage: function( message ) {
     this.state.socket.send( JSON.stringify({
+      type: "postMessage",
       username: message.username,
       content: message.content })
     );
@@ -70,15 +101,20 @@ const App = React.createClass({
 
   addMessage: function ( message ) {
     // var id = this.state.data.messages.length + 1;
+    console.log( "message: ", message );
 
-    this.state.data.messages.push({
+    this.state.messages.push({
       id: message.id,
-      username: message.username,
+      username: message.username.name,
       content: message.content
     });
 
 
-    this.setState({data: this.state.data})
+    this.setState( this.state )
+  },
+
+  addSystemMessage: function ( message ) {
+    console.log( "system message:", message );
   },
 
   render: function() {
@@ -88,9 +124,12 @@ const App = React.createClass({
         <nav>
           <h1>Chatty</h1>
         </nav>
-        <MessageList messages={this.state.data.messages}/>
-        <ChatBar  currentUser={this.state.data.currentUser}
-                  onKeyPressedEnter={this.sendMessage}/>
+        <MessageList messages={ this.state.messages }/>
+        <ChatBar  currentUser={ this.state.currentUser }
+                  onKeyPressedEnter={ this.sendMessage }
+                  changeName={ this.changeName }
+                  updateCurrentUser={ this.updateCurrentUser }
+        />
       </div>
     );
   }
