@@ -8,7 +8,6 @@ const App = React.createClass({
     var data = {
       currentUser: {name: ""},
       messages: [], // messages coming from the server will be stored here as they arrive
-      systemMessages: [],
       clientCount: 0
     };
     return data;
@@ -97,14 +96,3 @@ const App = React.createClass({
 
 export default App;
 
-//                      systemMessages={ this.state.systemMessages }
-
-//class App extends Component {
-//  render() {
-//    return(
-//      <h1>Hello React :)</h1>
-//    );
-//
-//  }
-//}
-//export App;
