@@ -4,8 +4,6 @@ import React, {Component} from 'react';
 const SystemMessage = React.createClass({
   render: function() {
 
-    console.log("SystemMessage");
-
     return (
       <div className="message system">
         { this.props.content }

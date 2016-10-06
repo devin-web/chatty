@@ -5,8 +5,6 @@ import SystemMessage from './SystemMessage.jsx';
 const MessageList = React.createClass({
   render: function() {
 
-    console.log("MessageList:", this.props.messages );
-
     var messages = [];
 
     for(var i=0; i < this.props.messages.length; i++){
