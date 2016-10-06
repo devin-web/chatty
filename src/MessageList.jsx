@@ -5,35 +5,30 @@ import SystemMessage from './SystemMessage.jsx';
 const MessageList = React.createClass({
   render: function() {
 
-    console.log("MessageList");
+    console.log("MessageList:", this.props.messages );
 
     var messages = [];
-    var systemMessages = [];
 
     for(var i=0; i < this.props.messages.length; i++){
-      messages.push
-      (
-        <Message  key={this.props.messages[i].id}
-                  username={this.props.messages[i].username}
-                  content={this.props.messages[i].content}/>
-      );
-    }
 
-    for( var i=0; i < this.props.systemMessages.length; i++ ){
-      systemMessages.push
-      (
-        <SystemMessage  key={ this.props.systemMessages[i].id }
-                        content={ this.props.systemMessages[i].content }/>
-      )
+      if( this.props.messages[i].type === "incomingMessage" ){
+        messages.push(
+          <Message  key={this.props.messages[i].id}
+                    username={this.props.messages[i].username.name}
+                    content={this.props.messages[i].content}/>
+        );
+      }
+      else {
+        messages.push(
+          <SystemMessage  key={ this.props.messages[i].id }
+                          content={ this.props.messages[i].content }/>
+        );
+      }
     }
-
     return (
       <div id="message-list">
         {
           messages
-        }
-        {
-          systemMessages
         }
       </div>
     );

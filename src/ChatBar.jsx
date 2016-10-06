@@ -41,7 +41,7 @@ const ChatBar = React.createClass({
 
     let newState = Object.assign({}, this.state, { username: { name: event.target.value }});
     this.setState( newState );
-    console.log( "hadndleChangeName", this.state.username );
+    console.log( "handleChangeName", this.state.username );
   },
 
 
@@ -63,7 +63,9 @@ const ChatBar = React.createClass({
 
         this.setState( newState );
 
-        this.props.changeName( this.usernameSinceLastEnter, this.state.username );
+        this.props.changeName(
+          this.usernameSinceLastEnter.name ? this.usernameSinceLastEnter : { name: "Anonymous" },
+          this.state.username.name ? this.state.username : { name: "Anonymous" } );
 
         this.usernameSinceLastEnter = this.state.username;
 
@@ -85,10 +87,11 @@ const ChatBar = React.createClass({
 
         console.log("newstate2: ",this.state );
       }
+      console.log( "***Username: ", this.state.username );
 
       this.props.onKeyPressedEnter( {
         //username: this.props.currentUser.name,
-        username: this.state.username,
+        username: this.state.username.name ? this.state.username : { name: "Anonymous" },
         content: this.state.value
 
       });
@@ -109,9 +112,9 @@ const ChatBar = React.createClass({
       <footer>
         <input id="username" type="text"
                 placeholder={
-                  this.props.currentUser ? "" : "Enter a username (optional)"
+                  this.state.username.name ? "" : "Enter a username (optional)"
                 }
-                value={ this.props.currentUser ? this.props.currentUser.name : "" }
+                value={ this.state.username.name ? this.state.username.name : "" }
                 onChange={ this.handleChangeName }
 //                onKeyPress={ this.onKeyPressName }
         />

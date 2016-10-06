@@ -28,9 +28,10 @@ import Message from './Message.jsx';
 const App = React.createClass({
   getInitialState: function() {
     var data = {
-      currentUser: {name: "Bob"},
+      currentUser: {name: ""},
       messages: [], // messages coming from the server will be stored here as they arrive
-      systemMessages: []
+      systemMessages: [],
+      clientCount: 0
     };
     return data;
   },
@@ -40,7 +41,7 @@ const App = React.createClass({
     setTimeout(() => {
       console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
-      this.state.messages.push({id: 3, username: "Michelle", content: "Hello there!"});
+      this.state.messages.push({id: 3, type:"incomingMessage", username: { name:  "Michelle" }, content: "Hello there!"});
       // Update the state of the app component. This will call render()
       this.setState( this.state );
     }, 3000);
@@ -60,10 +61,14 @@ const App = React.createClass({
 
       switch( message.type ) {
       case "incomingMessage":
+      case "incomingNotification": //so that notifications and messages are sorted together, chronologically
         this.addMessage( message );
         break;
-      case "incomingNotification":
-        this.addSystemMessage( message );
+      // case "incomingNotification":
+      //   this.addSystemMessage( message );
+      //   break;
+      case "clientCount":
+        this.updateClientCount( Number( message.clientCount ) );
         break;
       default:
         console.log( "Error, unexpected packet received" );
@@ -73,6 +78,11 @@ const App = React.createClass({
     // code to handle incoming message
     }
 
+  },
+
+  updateClientCount: function( clientCount ) {
+    let newState = Object.assign( {}, this.state, { clientCount: clientCount });
+    this.setState( newState );
   },
 
   updateCurrentUser: function( name ) {
@@ -104,24 +114,20 @@ const App = React.createClass({
     // var id = this.state.data.messages.length + 1;
     console.log( "message: ", message );
 
-    this.state.messages.push({
-      id: message.id,
-      username: message.username.name,
-      content: message.content
-    });
+    this.state.messages.push( message );
 
 
     this.setState( this.state )
   },
 
-  addSystemMessage: function ( message ) {
-    console.log( "system message:", message );
+  // addSystemMessage: function ( message ) {
+  //   console.log( "system message:", message );
 
-    this.state.systemMessages.push({
-      id: message.id,
-      content: message.content
-    });
-  },
+  //   this.state.systemMessages.push({
+  //     id: message.id,
+  //     content: message.content
+  //   });
+  // },
 
   render: function() {
     console.log("App");
@@ -129,9 +135,9 @@ const App = React.createClass({
       <div className="wrapper">
         <nav>
           <h1>Chatty</h1>
+          <p id="client_count">{this.state.clientCount} Users online</p>
         </nav>
         <MessageList  messages={ this.state.messages }
-                      systemMessages={ this.state.systemMessages }
         />
         <ChatBar  currentUser={ this.state.currentUser }
                   onKeyPressedEnter={ this.sendMessage }
@@ -144,6 +150,8 @@ const App = React.createClass({
 });
 
 export default App;
+
+//                      systemMessages={ this.state.systemMessages }
 
 //class App extends Component {
 //  render() {
