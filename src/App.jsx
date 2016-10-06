@@ -29,7 +29,8 @@ const App = React.createClass({
   getInitialState: function() {
     var data = {
       currentUser: {name: "Bob"},
-      messages: [] // messages coming from the server will be stored here as they arrive
+      messages: [], // messages coming from the server will be stored here as they arrive
+      systemMessages: []
     };
     return data;
   },
@@ -115,6 +116,11 @@ const App = React.createClass({
 
   addSystemMessage: function ( message ) {
     console.log( "system message:", message );
+
+    this.state.systemMessages.push({
+      id: message.id,
+      content: message.content
+    });
   },
 
   render: function() {
@@ -124,7 +130,9 @@ const App = React.createClass({
         <nav>
           <h1>Chatty</h1>
         </nav>
-        <MessageList messages={ this.state.messages }/>
+        <MessageList  messages={ this.state.messages }
+                      systemMessages={ this.state.systemMessages }
+        />
         <ChatBar  currentUser={ this.state.currentUser }
                   onKeyPressedEnter={ this.sendMessage }
                   changeName={ this.changeName }

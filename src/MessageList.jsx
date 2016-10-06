@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Message from './Message.jsx';
+import SystemMessage from './SystemMessage.jsx';
 
 const MessageList = React.createClass({
   render: function() {
@@ -7,6 +8,7 @@ const MessageList = React.createClass({
     console.log("MessageList");
 
     var messages = [];
+    var systemMessages = [];
 
     for(var i=0; i < this.props.messages.length; i++){
       messages.push
@@ -17,17 +19,28 @@ const MessageList = React.createClass({
       );
     }
 
+    for( var i=0; i < this.props.systemMessages.length; i++ ){
+      systemMessages.push
+      (
+        <SystemMessage  key={ this.props.systemMessages[i].id }
+                        content={ this.props.systemMessages[i].content }/>
+      )
+    }
+
     return (
       <div id="message-list">
         {
           messages
         }
-        <div className="message system">
-          Anonymous1 changed their name to nomnom.
-        </div>
+        {
+          systemMessages
+        }
       </div>
     );
   }
 });
+        // <div className="message system">
+          // Anonymous1 changed their name to nomnom.
+        // </div>
 
 export default MessageList;
